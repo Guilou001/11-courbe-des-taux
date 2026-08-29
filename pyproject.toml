@@ -29,7 +29,7 @@ dev = ["pytest>=8", "ruff>=0.6"]
 ycc = "ycc.cli:app"
 
 [project.urls]
-Repository = "https://github.com/Guilou001/11-yield-curve-ca"
+Repository = "https://github.com/Guilou001/11-courbe-des-taux"
 
 [tool.hatch.build.targets.wheel]
 packages = ["src/ycc"]

@@ -4,6 +4,6 @@ title: "yield-curve-ca : la courbe des taux canadienne, de Diebold-Li aux chocs 
 authors:
   - family-names: "Vaudescal"
     given-names: "Guillaume"
-repository-code: "https://github.com/Guilou001/11-yield-curve-ca"
+repository-code: "https://github.com/Guilou001/11-courbe-des-taux"
 license: MIT
 date-released: "2026-08-29"

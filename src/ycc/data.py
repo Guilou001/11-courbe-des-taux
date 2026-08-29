@@ -19,7 +19,7 @@ CURVE_URL = ("https://www.bankofcanada.ca/stats/results/csv"
 TP_URL = "https://www.bankofcanada.ca/valet/observations/group/FVI_FINANCIAL_MARKETS_TP_GOC/json"
 HOWE_URL = "https://cdhowe.org/wp-content/uploads/2024/06/Recession_Chronology_0.xlsx"
 
-UA = {"User-Agent": "ycc laboratoire pedagogique (github.com/Guilou001/11-yield-curve-ca)"}
+UA = {"User-Agent": "ycc laboratoire pedagogique (github.com/Guilou001/11-courbe-des-taux)"}
 
 
 def fetch() -> None:

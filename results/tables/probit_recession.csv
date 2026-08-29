@@ -1,0 +1,4 @@
+variable,debut,debut_oos,coef,pseudo_r2,auroc_in,auroc_ic90_bas,auroc_ic90_haut,auroc_in_commun_1995,auroc_oos,auroc_oos_hors_covid,prob_max_2022_23,prob_max_avant_2008
+pente_brute,1986-01,1996-01,-0.3468,0.1166,0.706,0.5179,0.9047,0.6129,0.4986,0.2656,0.5943,0.2799
+pente_nette,1995-01,2008-11,0.1696,0.0237,0.4277,0.2771,0.6223,0.4277,0.1553,0.1538,0.1596,
+ecart_forward,1986-01,1996-01,-0.5069,0.1432,0.7278,0.5697,0.8983,0.6354,0.5392,0.3623,0.7251,0.2766

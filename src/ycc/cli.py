@@ -108,13 +108,13 @@ def recession(out: Path = Path("results"), horizon: int = 12) -> None:
         lo, hi = rec.auroc_block_bootstrap(y, score)
         cc = sample.intersection(commun)
         a_commun = rec.auroc(target.loc[cc].to_numpy().astype(int), -feats[col].loc[cc].to_numpy())
-        oos = rec.oos_probabilities(feats[col], target, start="1996-01")
+        oos = rec.oos_probabilities(feats[col], target, start="1996-01", horizon=horizon)
         probs[col] = oos
         oos_common = oos.index.intersection(target.dropna().index)
         a_oos = rec.auroc(target.loc[oos_common].to_numpy().astype(int),
                           oos.loc[oos_common].to_numpy())
-        # la récession de 2020 est une pandémie : la fenêtre dont la cible la contient est retirée
-        hors_covid = oos_common[(oos_common < pd.Period("2019-03", "M"))
+        # la récession de 2020 est une pandémie : tout mois dont la fenêtre cible la contient est retiré
+        hors_covid = oos_common[(oos_common < pd.Period("2020-03", "M") - horizon)
                                 | (oos_common > pd.Period("2020-04", "M"))]
         y_hc = target.loc[hors_covid].to_numpy().astype(int)
         a_oos_hc = rec.auroc(y_hc, oos.loc[hors_covid].to_numpy()) if 0 < y_hc.sum() < len(y_hc) \

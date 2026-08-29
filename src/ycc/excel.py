@@ -31,7 +31,8 @@ def build_workbook(curve_row: pd.Series, curve_date: str, dest: Path,
         f"Courbe du {curve_date} (source : bankofcanada.ca, décimales converties en %).",
         "Convention : composition continue, facteur d'actualisation EXP(-z*t) (BIS Papers 25).",
         "Feuille Obligation : changez le coupon (B2) ou l'échéance (B3), tout se recalcule.",
-        "Feuille Chocs : les six scénarios IRRBB (CAD : 200/250/200 pb, BCBS 2024) revalorisent l'obligation.",
+        "L'échéance est arrondie au pas de coupon le plus proche (0,5 an par défaut) et plafonne à 30 ans.",
+        "Feuille Chocs : les six scénarios IRRBB (CAD : 200/275/175 pb, BCBS d578 2024) revalorisent l'obligation.",
         "Les formules sont vivantes : aucun chiffre collé, tout part de la feuille Courbe.",
     ]
     for i, ligne in enumerate(lignes, start=1):
@@ -62,9 +63,12 @@ def build_workbook(curve_row: pd.Series, curve_date: str, dest: Path,
     for k in range(1, n_max + 1):
         r = 7 + k
         ws2.cell(row=r, column=1, value=f"={k}/$B$5")
+        # l'échéance est comparée en NOMBRE de coupons arrondis : une échéance hors grille est
+        # rattachée au pas le plus proche, le principal ne disparaît jamais en silence
         ws2.cell(row=r, column=2,
-                 value=f'=IF(A{r}>$B$3,0,$B$4*$B$2/100/$B$5+IF(A{r}=$B$3,$B$4,0))')
-        ws2.cell(row=r, column=3, value=f"=VLOOKUP(A{r},Courbe!$A$2:$B$121,2,FALSE)")
+                 value=(f"=IF(ROUND(A{r}*$B$5,0)>ROUND($B$3*$B$5,0),0,"
+                        f"$B$4*$B$2/100/$B$5+IF(ROUND(A{r}*$B$5,0)=ROUND($B$3*$B$5,0),$B$4,0))"))
+        ws2.cell(row=r, column=3, value=f"=IFERROR(VLOOKUP(A{r},Courbe!$A$2:$B$121,2,FALSE),0)")
         ws2.cell(row=r, column=4, value=f"=EXP(-C{r}/100*A{r})")
         ws2.cell(row=r, column=5, value=f"=B{r}*D{r}")
         ws2.cell(row=r, column=6, value=f"=A{r}*E{r}")
@@ -100,7 +104,7 @@ def build_workbook(curve_row: pd.Series, curve_date: str, dest: Path,
         ws3.cell(row=r, column=2, value=f"=Obligation!B{8 + k}")
         for j in range(3, 3 + len(shocks)):
             ws3.cell(row=r, column=j,
-                     value=f"=VLOOKUP($A{r},$A$2:$H${len(taus) + 1},{j},FALSE)")
+                     value=f"=IFERROR(VLOOKUP($A{r},$A$2:$H${len(taus) + 1},{j},FALSE),0)")
     he = hs + n_max - 1
     r0 = he + 2
     ws3.cell(row=r0, column=1, value="Prix sous chaque scénario").font = bold

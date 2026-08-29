@@ -3,10 +3,11 @@
 Toute l'actualisation suit la convention de la courbe BdC, la composition continue : le facteur
 d'actualisation d'un flux à t années vaut exp(-z(t) * t), z en décimales.
 
-Les chocs viennent du gabarit du Comité de Bâle pour le CAD, recalibré en juillet 2024 et en
-vigueur depuis le 1er janvier 2026 (rapporté) : parallèle 200 pb, taux court 250 pb, taux long
-200 pb, avec les formes fonctionnelles de la norme IRRBB (décroissance exp(-t/4) pour le choc
-court, 1 - exp(-t/4) pour le choc long, coefficients 0,65/0,90 et 0,80/0,60 des chocs de pente).
+Les chocs viennent du gabarit du Comité de Bâle pour le CAD, recalibré en juillet 2024 (d578,
+table de SRP31.90) et en vigueur depuis le 1er janvier 2026 (rapporté) : parallèle 200 pb, taux
+court 275 pb, taux long 175 pb, avec les formes fonctionnelles de la norme IRRBB (décroissance
+exp(-t/4) pour le choc court, 1 - exp(-t/4) pour le choc long, coefficients 0,65/0,90 et
+0,80/0,60 des chocs de pente).
 """
 
 from __future__ import annotations
@@ -16,9 +17,9 @@ from dataclasses import dataclass
 import numpy as np
 import pandas as pd
 
-R_PARALLELE = 2.00      # points de pourcentage, CAD, BCBS d578 (2024), rapporté
-R_COURT = 2.50
-R_LONG = 2.00
+R_PARALLELE = 2.00      # points de pourcentage, CAD, BCBS d578 (2024, SRP31.90), rapporté
+R_COURT = 2.75
+R_LONG = 1.75
 
 
 def interp_zero(curve_row: pd.Series, t: np.ndarray) -> np.ndarray:

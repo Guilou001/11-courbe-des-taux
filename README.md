@@ -7,18 +7,21 @@ prime de terme, et un module ALM sous les chocs réglementaires IRRBB. *English 
 ## En bref
 
 1. **La marche aléatoire bat le Nelson-Siegel dynamique sur la courbe canadienne.** Sur
-   367 prévisions mensuelles 1996-2026, le modèle de Diebold et Li fait pire que « demain
-   égale aujourd'hui » dans 26 cases sur 27 (maturité x horizon), significativement à 1 et
-   6 mois. Le résultat américain de 2006 ne se transpose pas. (Mesuré.)
+   367 origines mensuelles 1996-2026 (356 à l'horizon d'un an), le modèle de Diebold et Li
+   fait pire que « demain égale aujourd'hui » dans 26 cases sur 27 (maturité x horizon),
+   significativement à 1 et 6 mois. Le résultat américain de 2006 ne se transpose pas.
+   (Mesuré.)
 2. **Hors échantillon, la pente canadienne prédit les récessions au niveau du hasard.**
    AUROC de 0,50 pour la pente brute, et 0,27 en retirant la fenêtre COVID : les inversions
-   de 2000, 2006-07, 2019 et 2022-24 n'ont pas été suivies de récession dans les 12 mois,
-   et la récession de 2008 est arrivée sans inversion franche. La pente nette de prime de
-   terme, censée corriger le signal, fait pire sur son échantillon court. (Mesuré.)
+   de 2000, 2006-07 et 2022-24 n'ont été suivies d'aucune récession dans les 12 mois, celle
+   de 2019 ne l'a été que par la pandémie (que la courbe ne pouvait pas prédire), et la
+   récession de 2008 est arrivée sans inversion franche. La pente nette de prime de terme,
+   censée corriger le signal, fait pire sur son échantillon court. (Mesuré.)
 3. **En ALM, la forme du choc compte autant que son ampleur.** Le choc réalisé de 2022
-   (+412 pb à 3 mois) dépasse le gabarit réglementaire court (250 pb), mais son profil
-   d'aplatissement limite la perte du bilan stylisé à 2,3 G$, contre 4,1 G$ pour le
-   scénario de pentification. (Mesuré sur bilan précepte.)
+   (+412 pb à 3 mois) dépasse le gabarit réglementaire court (275 pb), mais son profil
+   d'aplatissement limite la perte du bilan stylisé à 2,3 G$, contre 3,7 G$ pour les pires
+   gabarits (parallèle hausse et pentification, à 0,04 G$ l'un de l'autre). (Mesuré sur
+   bilan précepte.)
 
 Le fil du portfolio, ce qui survit hors échantillon, donne ici son épisode le plus net :
 deux outils canoniques de la courbe des taux, célèbres sur données américaines
@@ -76,8 +79,8 @@ les inversions : 1990, brièvement 2000 et 2007, puis le plateau de 2022-24. La 
 
 ![Instantanés de courbe](results/figures/courbes_instantanees.png)
 
-**Comment lire cette figure.** Cinq coupes de la même surface : avril 1990 (tout à 11-13 %,
-courbe inversée), juin 2007 (plate à 4,5 %), juillet 2020 (écrasée sous 1 %), décembre 2022
+**Comment lire cette figure.** Cinq coupes de la même surface : avril 1990 (de 10 à
+13,4 %, courbe inversée), juin 2007 (plate à 4,5 %), juillet 2020 (écrasée sous 1 %), décembre 2022
 (inversée : 4,7 % à 1 an, 3,3 % à 10 ans), et la dernière courbe disponible. La coupe de
 1990 s'arrête à 25 ans : le très long bout n'est publié qu'à partir de 1991.
 
@@ -104,8 +107,8 @@ Ratio de RMSE du DNS contre la marche aléatoire (sous 1, le modèle gagne ; mes
 
 **Lecture guidée.** La seule case sous 1 est le taux 3 mois à horizon 12 mois (0,988), et
 le test de Diebold-Mariano ne la distingue pas du hasard (p = 0,85). Partout ailleurs le
-DNS perd, de 7 % à 64 %, et la perte est significative à 1 mois (p < 0,001 sur les neuf
-maturités) comme à 6 mois (p < 0,05 sur sept maturités sur neuf). L'AR(1) direct perd
+DNS perd, de 6 % à 64 %, et la perte est significative à 1 mois (p < 0,001 sur les neuf
+maturités) comme à 6 mois (p < 0,05 sur huit maturités sur neuf). L'AR(1) direct perd
 aussi, mais moins : la structure de facteurs n'apporte rien que la persistance de chaque
 taux ne contienne déjà. À titre d'échelle, la marche aléatoire se trompe de 21 pb à
 1 mois et de 69 pb à 12 mois sur le taux 10 ans.
@@ -158,9 +161,10 @@ loi. Hors échantillon, tout s'effondre, et le détail des inversions dit pourqu
 - 1988-09 à 1991-03, 31 mois d'inversion jusqu'à -3,1 pp : la récession de 1990-92 suit.
   C'est le seul succès, et il est dans l'échantillon d'apprentissage.
 - 2000 : deux brèves inversions (-0,2 pp). Récession américaine en 2001, aucune au Canada.
-- 2006-08 à 2007-07 : dix mois d'inversion peu profonde (-0,26 pp). La récession arrive
-  en octobre 2008, 16 mois après la dernière inversion : la fenêtre de 12 mois la manque.
-  À la veille de la crise, le probit ne donnait que 28 % de probabilité.
+- 2006-08 à 2007-07 : dix mois d'inversion peu profonde (-0,26 pp). Le premier mois de
+  récession, novembre 2008, tombe 16 mois après la dernière inversion : la fenêtre de
+  12 mois manque l'épisode. À la veille de la crise, le probit ne donnait que 28 % de
+  probabilité.
 - 2019 : sept mois d'inversion, puis la pandémie. Le « succès » de 2020 est un accident :
   aucune courbe de taux ne prédit un virus, et retirer cette fenêtre fait TOMBER l'AUROC
   hors échantillon sous 0,5 : le classement devient pire que le hasard.
@@ -172,8 +176,9 @@ brute trompeuse), ne sauve rien : sur son échantillon 1995-2026, son coefficien
 mauvais signe et son AUROC est sous 0,5, car ses deux récessions observables (2008, 2020)
 sont précisément celles que la pente ne voit pas. Allonger la fenêtre à 18 mois, pour
 donner sa chance à l'épisode 2006-08, remonte la pente brute à 0,58 hors échantillon
-(0,47 hors COVID) mais gonfle la fausse alarme de 2022-23 à 77 %
-(`results/tables/probit_recession_h18.csv`).
+(0,41 hors COVID) mais gonfle la fausse alarme de 2022-23 à 80 %
+(`results/tables/probit_recession_h18.csv` ; l'estimation y attend t + 18 avant d'utiliser
+une cible, même règle anti-fuite qu'à 12 mois).
 
 ![Probit de récession](results/figures/probit_recession.png)
 
@@ -190,13 +195,15 @@ Un bilan de banque de détail stylisé (précepte déclaré, 100 G$ d'actifs) : 
 5 ans (45), obligations 10 ans (20), prêts à taux variable (25), encaisse (10), contre
 dépôts à vue à duration comportementale de 2,5 ans (40), CPG 1,5 an (30) et financement
 de gros 2 ans (22). La duration comportementale, l'échéance effective que la banque prête
-à des dépôts remboursables à vue, est un précepte encadré par la ligne directrice B-12 de
-l'OSFI (plafond de 5 ans pour ces dépôts, rapporté).
+à des dépôts remboursables à vue, est un précepte : le cadre standardisé de Bâle (d368)
+plafonne à 5 ans l'échéance moyenne de la part stable des dépôts de détail transactionnels
+(rapporté) ; la ligne directrice B-12 de l'OSFI exige des hypothèses comportementales
+documentées sans fixer de plafond chiffré (rapporté).
 
 Chaque poste est revalorisé flux par flux sur la courbe du 2026-08-12, puis sous les six
-scénarios IRRBB du gabarit CAD recalibré du Comité de Bâle (2024, en vigueur depuis
-janvier 2026, rapporté) : parallèle 200 pb, choc court 250 pb décroissant en exp(-t/4),
-choc long 200 pb, pentification et aplatissement combinés. S'y ajoute un scénario mesuré :
+scénarios IRRBB du gabarit CAD recalibré du Comité de Bâle (d578, 2024, en vigueur depuis
+janvier 2026, rapporté) : parallèle 200 pb, choc court 275 pb décroissant en exp(-t/4),
+choc long 175 pb, pentification et aplatissement combinés. S'y ajoute un scénario mesuré :
 le déplacement réellement observé de décembre 2021 à décembre 2022, soit +412 pb à 3 mois
 et +180 pb à 10 ans.
 
@@ -205,19 +212,21 @@ précepte, `results/tables/delta_eve.csv`) :
 
 | Scénario | Delta-EVE (G$) |
 |---|---|
-| Parallèle hausse | -3,7 |
-| Parallèle baisse | +4,6 |
-| Pentification | **-4,1** |
-| Aplatissement | +3,1 |
-| Court hausse / baisse | +0,4 / -0,4 |
-| **2022 mesuré** | **-2,3** |
+| Parallèle hausse | **-3,72** |
+| Parallèle baisse | +4,61 |
+| Pentification | -3,68 |
+| Aplatissement | +2,75 |
+| Court hausse / baisse | +0,45 / -0,47 |
+| **2022 mesuré** | **-2,31** |
 
 **Lecture guidée.** Le bilan est long en duration (actifs à 5-10 ans, passifs à 1,5-2,5
-ans) : toute hausse du long bout coûte. Le pire scénario n'est pas le parallèle mais la
-pentification, car la hausse du long n'y est pas amortie par la revalorisation des
-passifs courts. Et 2022, pourtant plus violent que tout gabarit au court terme (412 pb
-contre 250), coûte moitié moins que la pentification : c'était un aplatissement, et
-l'aplatissement est le scénario ami de ce bilan. Le revenu net d'intérêts à 12 mois
+ans) : toute hausse du long bout coûte. Le pire scénario est le parallèle hausse, d'un
+cheveu (0,04 G$) devant la pentification : cet ordre-là n'est pas robuste aux montants du
+bilan précepte, et c'est déclaré ; ce qui est robuste, c'est que les deux chocs qui
+montent le long bout font perte, et les deux qui l'abaissent font gain. Et 2022, pourtant
+plus violent que tout gabarit au court terme (412 pb contre 275), coûte un tiers de moins
+que le pire scénario : c'était un aplatissement, et l'aplatissement est le scénario ami
+de ce bilan. Le revenu net d'intérêts à 12 mois
 bouge de +0,56 G$ sous +200 pb : le gap de refixation est positif, les actifs se
 refixent plus vite que les passifs. La somme des durations par taux clés de l'obligation
 10 ans (8,34) retrouve sa duration totale (test).
@@ -231,8 +240,10 @@ pentification : l'ampleur historique du choc ne suffit pas à en faire le pire c
 Le classeur `reports/calculs_obligataires.xlsx` refait tout en formules Excel vivantes :
 prix par actualisation flux par flux (EXP(-z t), RECHERCHEV exacte sur la grille de la
 courbe), duration de Macaulay, et revalorisation sous les six chocs. Changez le coupon ou
-l'échéance, tout se recalcule. (Généré par `ycc alm` ; formules vérifiées sur cas plat
-contre la forme fermée, test `test_bond_price_flat_curve_closed_form`.)
+l'échéance (arrondie au pas de coupon, 30 ans au plus), tout se recalcule. (Généré par
+`ycc alm` ; la fonction Python que les formules reproduisent est vérifiée sur cas plat
+contre la forme fermée, test `test_bond_price_flat_curve_closed_form` ; les formules
+Excel elles-mêmes sont relues, non évaluées automatiquement, déclaré.)
 
 ## Reproduire
 
@@ -299,14 +310,15 @@ origins: the random walk wins in 26 of 27 maturity-horizon cells; the only DNS w
 luck. The celebrated US result does not carry over to Canada. (2) Recession probits on
 the raw slope, the ACM term-premium-adjusted slope, and the near-term forward spread:
 out-of-sample AUROC is 0.50 for the raw slope, and drops BELOW 0.5 excluding the COVID
-window, because the 2000, 2006-07, 2019 and 2022-24 inversions were followed by no
-C.D. Howe recession within 12 months while October 2008 arrived without a deep
-inversion. The term-premium correction makes things worse on its short 1995- sample.
-(3) A stylized 100-G$ retail-bank balance sheet under the six recalibrated Basel IRRBB
-shocks (CAD: 200/250/200 bp) plus the measured Dec-2021 to Dec-2022 curve move: the
-realized 2022 shock exceeds the short-rate template (+412 bp at 3 months) yet costs
--2.3 G$ against -4.1 G$ for the steepener, because its flattening shape favours a
-long-duration book. A live-formula Excel workbook reprices the bond under every
+window, because the 2000, 2006-07 and 2022-24 inversions were followed by no C.D. Howe
+recession within 12 months (the 2019 inversion was only "followed" by the pandemic, which
+no yield curve predicts) while October 2008 arrived without a deep inversion. The
+term-premium correction makes things worse on its short 1995- sample. (3) A stylized
+100-G$ retail-bank balance sheet under the six recalibrated Basel IRRBB shocks (CAD:
+200/275/175 bp, d578) plus the measured Dec-2021 to Dec-2022 curve move: the realized
+2022 shock exceeds the short-rate template (+412 bp at 3 months) yet costs -2.3 G$
+against -3.7 G$ for the worst templates (parallel up and steepener, within 0.04 G$ of
+each other), because its flattening shape favours a long-duration book. A live-formula Excel workbook reprices the bond under every
 scenario. All data free and script-downloaded; 15 synthetic tests, each against a known
 truth.
 

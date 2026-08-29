@@ -66,11 +66,13 @@ def auroc_block_bootstrap(y: np.ndarray, score: np.ndarray, block: int = 24,
     return float(np.percentile(stats, 5)), float(np.percentile(stats, 95))
 
 
-def oos_probabilities(x: pd.Series, y: pd.Series, start: str = "2000-01") -> pd.Series:
+def oos_probabilities(x: pd.Series, y: pd.Series, start: str = "2000-01",
+                      horizon: int = 12) -> pd.Series:
     """Les probabilités hors échantillon : à chaque mois, le probit n'est estimé que sur le passé.
 
-    La cible du mois t (récession dans les 12 mois) n'est observable qu'en t + 12 : l'estimation
-    à l'origine t n'utilise que les cibles des mois <= t - 12, sinon l'information fuit.
+    La cible du mois t (récession dans les `horizon` mois) n'est observable qu'en t + horizon :
+    l'estimation à l'origine t n'utilise que les cibles des mois <= t - horizon, sinon
+    l'information fuit.
     """
     import statsmodels.api as sm
 
@@ -78,7 +80,7 @@ def oos_probabilities(x: pd.Series, y: pd.Series, start: str = "2000-01") -> pd.
     origins = x.loc[pd.Period(start, "M"):].index
     probs = {}
     for t in origins:
-        past = y.loc[: t - 12].dropna()
+        past = y.loc[: t - horizon].dropna()
         xt = x.reindex(past.index).dropna()
         past = past.loc[xt.index]
         if len(past) < 60 or past.min() == past.max():

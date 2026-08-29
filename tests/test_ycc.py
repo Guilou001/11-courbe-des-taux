@@ -145,3 +145,22 @@ def test_delta_nii_hand_case():
              Poste("passif fixe", -100.0, 0.0, 5.0, 60.0)]
     # +200 pb : l'actif se refixe au mois 3, 9 mois de portage : 100 * 2 % * 9/12 = 1,5 G$
     assert delta_nii_12m(bilan, 2.0) == pytest.approx(1.5)
+
+
+def test_delta_nii_depend_du_beta_de_depot():
+    # le poste de dépôts à vue porte une duration COMPORTEMENTALE de 2,5 ans pour l'actualisation ;
+    # son taux, lui, se révise en continu. Le confondre avec une refixation à 30 mois revient à
+    # poser un bêta nul, et le gap devient positif par construction.
+    bilan = [Poste("actif variable", 100.0, 0.0, 0.25, 3.0),
+             Poste("dépôts à vue (duration comportementale)", -100.0, 0.0, 2.5, 30.0)]
+    assert delta_nii_12m(bilan, 2.0, beta_depot=0.0) == pytest.approx(1.5)
+    assert delta_nii_12m(bilan, 2.0, beta_depot=0.5) == pytest.approx(1.5 - 1.0)
+    assert delta_nii_12m(bilan, 2.0, beta_depot=1.0) == pytest.approx(1.5 - 2.0)
+
+
+def test_delta_nii_du_bilan_precepte_change_de_signe_avec_le_beta():
+    from ycc.alm import bilan_stylise
+
+    b = bilan_stylise()
+    assert delta_nii_12m(b, 2.0, beta_depot=0.0) > 0.0
+    assert delta_nii_12m(b, 2.0, beta_depot=1.0) < 0.0

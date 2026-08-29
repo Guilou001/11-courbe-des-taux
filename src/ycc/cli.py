@@ -138,7 +138,7 @@ def recession(out: Path = Path("results"), horizon: int = 12) -> None:
     labels = {"pente_brute": "pente brute", "pente_nette": "pente nette de prime",
               "ecart_forward": "écart forward"}
     figures.fig_recession(feats, {labels[k]: v for k, v in probs.items()}, eps,
-                          figs / f"probit_recession{suffix}.png")
+                          figs / f"probit_recession{suffix}.png", horizon=horizon)
     typer.echo(table.round(3).to_string(index=False))
 
 
@@ -154,7 +154,7 @@ def alm(out: Path = Path("results")) -> None:
     last = curve.iloc[-1]
     bilan = mod.bilan_stylise()
     move_2022 = curve.loc[:"2022-12-31"].iloc[-1] - curve.loc[:"2021-12-31"].iloc[-1]
-    extra = {"2022 mesuré (déc. 2021 -> déc. 2022)": last + move_2022}
+    extra = {"2022 mesuré (déc. 2021 à déc. 2022)": last + move_2022}
     delta = mod.delta_eve_scenarios(last, bilan, extra=extra)
     tables, figs = out / "tables", out / "figures"
     tables.mkdir(parents=True, exist_ok=True)
@@ -162,8 +162,10 @@ def alm(out: Path = Path("results")) -> None:
     delta.round(3).to_csv(tables / "delta_eve.csv", index=False)
     krd = mod.key_rate_durations(last, coupon_pct=4.0, maturity=10.0)
     krd.round(4).to_csv(tables / "krd_obligation_10ans.csv")
-    nii = pd.DataFrame([{"choc_pp": s, "delta_nii_12m": mod.delta_nii_12m(bilan, s)}
-                        for s in (+2.0, -2.0)])
+    # le signe du gap tient au bêta de dépôt : les trois hypothèses sont publiées côte à côte
+    nii = pd.DataFrame([{"choc_pp": s, "beta_depot": b,
+                         "delta_nii_12m": mod.delta_nii_12m(bilan, s, beta_depot=b)}
+                        for s in (+2.0, -2.0) for b in (0.0, 0.5, 1.0)])
     nii.round(3).to_csv(tables / "delta_nii.csv", index=False)
     figures.fig_alm(delta, figs / "delta_eve.png")
     excel.build_workbook(last, str(curve.index[-1].date()), Path("reports/calculs_obligataires.xlsx"))

@@ -10,6 +10,12 @@ import pandas as pd
 
 OKABE_ITO = ["#0072B2", "#E69F00", "#009E73", "#D55E00", "#CC79A7", "#56B4E9", "#F0E442", "#000000"]
 
+NOMS_SCENARIOS = {
+    "parallele_hausse": "Hausse parallèle", "parallele_baisse": "Baisse parallèle",
+    "pentification": "Pentification", "aplatissement": "Aplatissement",
+    "court_hausse": "Hausse du court terme", "court_baisse": "Baisse du court terme",
+}
+
 
 def use_style():
     import matplotlib as mpl
@@ -39,15 +45,23 @@ def fig_factors(betas: pd.DataFrame, episodes, dest: Path) -> None:
     fr = use_style()
     fig, axes = plt.subplots(3, 1, figsize=(9, 7.5), sharex=True)
     ts = betas.index.to_timestamp()
-    labels = [("niveau", "Niveau (beta 1, %)"), ("pente", "Pente (beta 2, %)"),
-              ("courbure", "Courbure (beta 3, %)")]
+    # β2 charge (1 - exp(-λτ))/(λτ), qui vaut 1 à l'échéance nulle et 0 à l'infini : β2 est donc le
+    # taux court MOINS le taux long, l'opposé de la pente 10 ans moins 3 mois tracée plus bas. Le
+    # dire dans l'axe évite de lire deux figures du même dépôt avec deux conventions de signe.
+    labels = [("niveau", "Niveau β1 (%)"),
+              ("pente", "Pente β2, court moins long\n(points de pourcentage)"),
+              ("courbure", "Courbure β3\n(points de pourcentage)")]
     for ax, (col, lab), color in zip(axes, labels, OKABE_ITO, strict=False):
         ax.plot(ts, betas[col], color=color)
         ax.set_ylabel(lab, fontsize=9.5)
         ax.yaxis.set_major_formatter(fr)
         _shade(ax, episodes, betas.index)
     axes[1].axhline(0, color="0.5", linewidth=0.8)
-    axes[0].set_title("Trois nombres résument la courbe canadienne : le niveau tombe de 10 % à 3 % en quarante ans")
+    niveau = betas["niveau"]
+    axes[0].set_title(f"Trois nombres résument la courbe canadienne\nLe niveau tombe de "
+                      f"{niveau.iloc[0]:.1f} % en {betas.index[0]} à {niveau.min():.1f} % en "
+                      f"{niveau.idxmin()}, puis remonte à {niveau.iloc[-1]:.1f} %".replace(".", ","),
+                      fontsize=11)
     fig.savefig(dest)
     plt.close(fig)
 
@@ -88,14 +102,15 @@ def fig_forecast(rmse: pd.DataFrame, dest: Path) -> None:
         ax.set_title(f"h = {h} mois", fontsize=10.5)
         ax.set_xlabel("Échéance (années)")
         ax.yaxis.set_major_formatter(fr)
-    axes[0].set_ylabel("Ratio de RMSE")
+    axes[0].set_ylabel("RMSE du modèle divisée par\ncelle de la marche aléatoire", fontsize=9.5)
     axes[0].legend(fontsize=8.5, loc="upper center")
     fig.suptitle("La marche aléatoire reste dure à battre : ratios de RMSE hors échantillon, 1996-2026", y=1.04)
     fig.savefig(dest, bbox_inches="tight")
     plt.close(fig)
 
 
-def fig_recession(feats: pd.DataFrame, probs: dict[str, pd.Series], episodes, dest: Path) -> None:
+def fig_recession(feats: pd.DataFrame, probs: dict[str, pd.Series], episodes, dest: Path,
+                  horizon: int = 12) -> None:
     """En haut les pentes, en bas les probabilités hors échantillon ; 2022-23 est le test décisif."""
     fr = use_style()
     fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(9.5, 6.6), sharex=True,
@@ -104,7 +119,7 @@ def fig_recession(feats: pd.DataFrame, probs: dict[str, pd.Series], episodes, de
     ax1.plot(ts, feats["pente_brute"], color=OKABE_ITO[0], label="Pente brute (10 ans - 3 mois)")
     ax1.plot(ts, feats["pente_nette"], color=OKABE_ITO[3], label="Pente nette de prime de terme")
     ax1.axhline(0, color="0.4", linewidth=0.9)
-    ax1.set_ylabel("Points de %")
+    ax1.set_ylabel("Pente (points de pourcentage)")
     ax1.yaxis.set_major_formatter(fr)
     _shade(ax1, episodes, feats.index)
     ax1.legend(fontsize=9, loc="upper right")
@@ -112,12 +127,13 @@ def fig_recession(feats: pd.DataFrame, probs: dict[str, pd.Series], episodes, de
 
     for (name, p), color in zip(probs.items(), OKABE_ITO, strict=False):
         ax2.plot(p.index.to_timestamp(), p.to_numpy(), color=color, label=name)
-    ax2.set_ylabel("Prob. de récession à 12 mois")
+    ax2.set_ylabel(f"Probabilité de récession\ndans les {horizon} mois", fontsize=9.5)
     ax2.set_ylim(0, 1)
     ax2.yaxis.set_major_formatter(fr)
     _shade(ax2, episodes, feats.index)
     ax2.legend(fontsize=9, loc="upper right")
-    ax2.set_title("Probit estimé en fenêtre expansive, cible jamais observée avant t + 12", fontsize=10.5)
+    ax2.set_title(f"Probit estimé en fenêtre expansive, cible jamais observée avant t + {horizon}",
+                  fontsize=10.5)
     fig.savefig(dest)
     plt.close(fig)
 
@@ -131,7 +147,9 @@ def fig_alm(delta: pd.DataFrame, dest: Path) -> None:
     for i, m in enumerate(mesure):
         if m:
             colors[i] = OKABE_ITO[0]
-    noms = delta["scenario"].str.replace("_", " ")
+    # les clés internes (« parallele_hausse ») restent celles des tables et des tests ; la figure,
+    # elle, porte le nom réglementaire écrit en toutes lettres
+    noms = delta["scenario"].map(NOMS_SCENARIOS).fillna(delta["scenario"].str.replace("_", " "))
     ax.barh(noms, delta["delta_eve"], color=colors, height=0.62)
     for nom, v in zip(noms, delta["delta_eve"], strict=True):
         ax.text(v + (0.1 if v >= 0 else -0.1), nom,
@@ -140,7 +158,8 @@ def fig_alm(delta: pd.DataFrame, dest: Path) -> None:
     lim = float(delta["delta_eve"].abs().max()) * 1.22
     ax.set_xlim(-lim, lim)
     ax.axvline(0, color="0.3", linewidth=0.9)
-    ax.set_xlabel("Delta-EVE (milliards de dollars, bilan stylisé de 100)")
+    ax.set_xlabel("Variation de la valeur économique des fonds propres\n"
+                  "(milliards de dollars ; bilan stylisé de 100 G$ d'actif)")
     ax.xaxis.set_major_formatter(fr)
     ax.set_title("2022 dépasse le gabarit court en ampleur, mais sa forme d'aplatissement amortit la perte")
     fig.savefig(dest, bbox_inches="tight")

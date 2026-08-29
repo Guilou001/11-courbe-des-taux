@@ -226,9 +226,13 @@ bilan précepte, et c'est déclaré ; ce qui est robuste, c'est que les deux cho
 montent le long bout font perte, et les deux qui l'abaissent font gain. Et 2022, pourtant
 plus violent que tout gabarit au court terme (412 pb contre 275), coûte un tiers de moins
 que le pire scénario : c'était un aplatissement, et l'aplatissement est le scénario ami
-de ce bilan. Le revenu net d'intérêts à 12 mois
-bouge de +0,56 G$ sous +200 pb : le gap de refixation est positif, les actifs se
-refixent plus vite que les passifs. La somme des durations par taux clés de l'obligation
+de ce bilan. Le revenu net d'intérêts à 12 mois sous +200 pb ne dépend pas d'abord de la
+structure d'échéances mais du bêta de dépôt, la part du choc répercutée sur le coût des
+dépôts à vue : il vaut **+0,558 G$ à bêta nul, +0,158 G$ à bêta 0,5 et −0,242 G$ à bêta 1**
+(mesuré, `results/tables/delta_nii.csv`, bilan précepte). L'audit du 2026-08-29 a montré
+que la première version confondait la duration comportementale des dépôts, 2,5 ans, avec
+leur date de refixation : aucun passif n'entrait alors dans la fenêtre de douze mois et le
+gap était positif par construction. La somme des durations par taux clés de l'obligation
 10 ans (8,34) retrouve sa duration totale (test).
 
 ![Delta-EVE](results/figures/delta_eve.png)

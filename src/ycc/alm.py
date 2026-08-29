@@ -135,14 +135,26 @@ def delta_eve_scenarios(curve_row: pd.Series, bilan: list[Poste],
     return pd.DataFrame(rows)
 
 
-def delta_nii_12m(bilan: list[Poste], shock_pp: float) -> float:
+def delta_nii_12m(bilan: list[Poste], shock_pp: float, beta_depot: float = 0.5) -> float:
     """Le revenu net d'intérêts à 12 mois sous un choc parallèle : gap de refixation (G$).
 
     Chaque poste qui se refixe au mois m subit le choc pendant (12 - m)/12 de l'année ;
     un passif qui se refixe coûte plus cher, d'où le signe du montant.
+
+    ``beta_depot`` est la part du choc de taux répercutée sur le coût des dépôts à vue, un précepte
+    déclaré (Bâle emploie 0,5 comme ordre de grandeur usuel pour un dépôt de détail). Le paramètre
+    est décisif : le bilan précepte donne aux dépôts à vue une duration COMPORTEMENTALE de 2,5 ans
+    pour l'actualisation, mais leur taux, lui, se révise en continu. Les confondre revient à poser
+    un bêta nul, c'est-à-dire à supposer qu'une hausse de 200 pb ne coûte rien au passif pendant un
+    an, et le gap est alors positif par construction. Mesuré sur le bilan du dépôt sous +200 pb
+    (results/tables/delta_nii.csv) : +0,558 G$ à bêta nul, +0,158 G$ à bêta 0,5, -0,242 G$ à bêta 1.
+    Convention : le dépôt à vue, dont le taux se révise en continu, porte le choc sur les douze mois.
     """
     total = 0.0
     for p in bilan:
-        if p.refixation_mois <= 12:
+        depot_a_vue = p.montant < 0 and "vue" in p.nom
+        if depot_a_vue:
+            total += p.montant * (shock_pp / 100.0) * beta_depot
+        elif p.refixation_mois <= 12:
             total += p.montant * (shock_pp / 100.0) * (12.0 - p.refixation_mois) / 12.0
     return float(total)

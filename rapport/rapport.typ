@@ -39,6 +39,8 @@
 
 Trois exercices sur la courbe zéro-coupon de la Banque du Canada (10 596 jours, 1986-2026) : la prévision de Diebold et Li rejouée hors échantillon, le probit de récession avec et sans prime de terme, et un module ALM sous les chocs réglementaires IRRBB. _English summary below._
 
+Le même contenu en PDF : #link("rapport/rapport.pdf")[rapport/rapport.pdf].
+
 == En bref
 
 + *La marche aléatoire bat le Nelson-Siegel dynamique sur la courbe canadienne.* Sur 367 origines mensuelles 1996-2026 (356 à l'horizon d'un an), le modèle de Diebold et Li fait pire que « demain égale aujourd'hui » dans 26 cases sur 27 (maturité x horizon), significativement à 1 et 6 mois. Le résultat américain de 2006 ne se transpose pas. (Mesuré.)

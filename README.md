@@ -4,6 +4,8 @@ Trois exercices sur la courbe zéro-coupon de la Banque du Canada (10 596 jours,
 la prévision de Diebold et Li rejouée hors échantillon, le probit de récession avec et sans
 prime de terme, et un module ALM sous les chocs réglementaires IRRBB. *English summary below.*
 
+Le même contenu en PDF : [rapport/rapport.pdf](rapport/rapport.pdf).
+
 ## En bref
 
 1. **La marche aléatoire bat le Nelson-Siegel dynamique sur la courbe canadienne.** Sur
